@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres
+    restart: on-failure
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: genesis-api
+    environment:
+      - PORT=${PORT}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    volumes:
+      - ./src:/app/src
+volumes:
+  db:
+    driver: local
